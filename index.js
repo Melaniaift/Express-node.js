@@ -1,9 +1,34 @@
+const debug = require('debug')('app:customLogger');
+const config = require('config');
+const morgan = require('morgan')
+const helmet = require('helmet');
 const Joi = require('joi');
+const logger = require('./logger');
 const express = require('express');
 const app = express();
 
+debug(`Application Name: ${config.get('name')}`);
+debug(`Mail Server: ${config.get('mail.host')}`); 
+debug(`Mail Password: ${config.get('mail.password')}`); 
+
+debug(`NODE_ENV: ${process.env.NODE_ENV}`); // undefined
+debug(`app: ${app.get('env')}`)
+
 //adding a piece of middleware 
 app.use(express.json())
+app.use(logger)
+
+app.use(express.urlencoded({ extended: true })) // reqbody is populated as json
+app.use(express.static('public'))
+app.use(helmet())
+
+if (app.get('env') === 'development') {
+    app.use(morgan('tiny'))
+    debug('morgan enabled')
+}
+
+
+
 
 const courses = [
     { id: 1, name: 'course1' },
@@ -88,4 +113,4 @@ app.delete('/api/courses/:id', (req, res) => {
 
 // PORT 
 const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Listening on port ${port}...`));
+app.listen(port, () => debug(`Listening on port ${port}...`));

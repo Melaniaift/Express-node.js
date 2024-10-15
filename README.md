@@ -31,3 +31,16 @@ OR
 nodemon index.js
 ```
 The difference between these two is the reactiveness to changes.
+
+
+### 3. Start the debugger messages:
+
+You have to set an environment variable for the password, for example:
+
+```bash
+export express_node_password=1234
+```
+
+```bash
+DEBUG=app:cutomLogger nodemon index.js
+```
